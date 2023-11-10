@@ -1,14 +1,13 @@
 ---
-environmentSpec: QA
+name: clouddictionariesapi
+description: <p><b>Hi Team - This is the Cloud Web Portal service API documentation</b></p>
+basePath: /clouddictionariesapi
+openApiSpec: clouddictionariesapi.yaml
+environmentSpec: Dev
 authMethod: none
-azureRateLimit:
-  noOfCalls: 21
-  renewalPeriod: 34
-  counter: ip-address
 responseCache:
-  timeDuration: 32
-product:
-  productName: Pro234
-  apiList: "export-apim,intstatusfunction"
+  timeDuration: 56
+corelation:
+  correlationId: "true"
 schemes: []
 routes: []
