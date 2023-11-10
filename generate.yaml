@@ -1,12 +1,14 @@
 ---
-environmentSpec: INT
+environmentSpec: QA
 authMethod: none
+azureRateLimit:
+  noOfCalls: 21
+  renewalPeriod: 34
+  counter: ip-address
 responseCache:
-  timeDuration: 56
+  timeDuration: 32
 product:
-  productName: Prod134
-  apiList: "asset-management,clouddictionariesapi,data-api-s,eesspa"
-corelation:
-  correlationId: "true"
+  productName: Pro234
+  apiList: "export-apim,intstatusfunction"
 schemes: []
 routes: []
