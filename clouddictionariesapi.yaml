@@ -1,0 +1,501 @@
+---
+openapi: "3.0.1"
+info:
+  version: "0.0.1"
+  title: "clouddictionariesapi"
+  description: "<p><b>Hi Team - This is the Cloud Web Portal service API documentation</b></p>"
+servers:
+- url: "https://cloud-dictionaries-qa-webapp-v1.azurewebsites.net"
+security:
+- X-Api-Key: []
+- Authorization: []
+tags:
+- name: "Device Type"
+paths:
+  /device-types:
+    get:
+      tags:
+      - "Device Type"
+      operationId: "getDeviceTypes"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+                additionalProperties:
+                  type: "array"
+                  items:
+                    $ref: "#/components/schemas/DeviceTypeResponse"
+    post:
+      tags:
+      - "Device Type"
+      operationId: "createDeviceType"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDeviceTypeRequest"
+        required: true
+      responses:
+        "201":
+          description: "Device Type has been created"
+          headers:
+            Location:
+              description: "URI to fetch the newly created device type"
+              style: "simple"
+              schema:
+                type: "string"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DeviceTypeResponse"
+  /device-types/list:
+    post:
+      tags:
+      - "Device Type"
+      operationId: "createDeviceTypes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/CreateDeviceTypeRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DeviceTypeMultipleInsertResponse"
+  /deployment-details:
+    get:
+      tags:
+      - "Deployment Details"
+      operationId: "getAllDeploymentDetails"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/GetDeploymentDetailsResponse"
+    post:
+      tags:
+      - "Deployment Details"
+      operationId: "addOrUpdateDeploymentDetails"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeploymentDetails"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DeploymentDetailsResponse"
+  /topology-service/metadata:
+    get:
+      tags:
+      - "cc-metadata-controller"
+      operationId: "getTopologyServiceMetadata"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/CCMetaData"
+  /reference-data/pdm/hmiLongNames:
+    get:
+      tags:
+      - "reference-data-controller"
+      operationId: "pdmHmiLongNames"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  type: "string"
+  /reference-data/cwp:
+    get:
+      tags:
+      - "reference-data-controller"
+      operationId: "loadCwpReferenceData"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CWPReferenceData"
+  /pdm/measures:
+    get:
+      tags:
+      - "Emcp"
+      operationId: "getPdmMeasures"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+  /families:
+    get:
+      tags:
+      - "family-controller"
+      operationId: "getFamilies"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  type: "string"
+  /families/{familyName}/device-types:
+    get:
+      tags:
+      - "Device Type"
+      operationId: "getDeviceTypesByFamily"
+      parameters:
+      - name: "familyName"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/DeviceTypeResponse"
+  /device-types/{deviceTypeId}:
+    get:
+      tags:
+      - "Device Type"
+      operationId: "getDeviceType"
+      parameters:
+      - name: "deviceTypeId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DeviceTypeResponse"
+    delete:
+      tags:
+      - "Device Type"
+      summary: "Delete device by deviceTypeId"
+      operationId: "deleteDeviceType"
+      parameters:
+      - name: "deviceTypeId"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      responses:
+        "204":
+          description: "No Content"
+  /device-types/byDeviceName/{deviceName}:
+    get:
+      tags:
+      - "Device Type"
+      operationId: "getDeviceTypeByName"
+      parameters:
+      - name: "deviceName"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DeviceTypeResponse"
+  /deployment-details-by-status:
+    get:
+      tags:
+      - "Deployment Details"
+      operationId: "getDeploymentDetailsByStatus"
+      parameters:
+      - name: "release-status"
+        in: "query"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/GetDeploymentDetailsResponse"
+components:
+  schemas:
+    CreateDeviceTypeRequest:
+      type: "object"
+      properties:
+        brand:
+          type: "string"
+          example: "Schneider-Electric"
+        model:
+          type: "string"
+          example: "iem2055"
+        family:
+          type: "string"
+        range:
+          type: "string"
+          example: "iem2000"
+        commercialReference:
+          type: "string"
+          example: "A9MEM2055"
+    DeviceTypeResponse:
+      required:
+      - "id"
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        brand:
+          type: "string"
+          example: "Schneider-Electric"
+        family:
+          type: "string"
+        range:
+          type: "string"
+          example: "iem2000"
+        model:
+          type: "string"
+          example: "iem2055"
+        commercialReference:
+          type: "string"
+          example: "A9MEM2055"
+    DeviceTypeKey:
+      type: "object"
+      properties:
+        brand:
+          type: "string"
+        model:
+          type: "string"
+    DeviceTypeMultipleInsertResponse:
+      type: "object"
+      properties:
+        success:
+          type: "integer"
+          format: "int32"
+        conflicts:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/DeviceTypeKey"
+    AuditInfo:
+      type: "object"
+      properties:
+        createdAt:
+          type: "string"
+          format: "date-time"
+        createdBy:
+          type: "string"
+        updatedAt:
+          type: "string"
+          format: "date-time"
+        updatedBy:
+          type: "string"
+    DeploymentDetails:
+      required:
+      - "currentReleaseVersion"
+      - "plannedReleaseDateTime"
+      - "releaseStatus"
+      - "serviceName"
+      type: "object"
+      properties:
+        releaseId:
+          type: "string"
+        serviceName:
+          type: "string"
+          enum:
+          - "CONVERSION_SERVICE"
+          - "TOPOLOGY_SERVICE"
+          - "PROJECT_MANAGEMENT_SERVICE"
+        plannedReleaseDateTime:
+          type: "string"
+          format: "date-time"
+        deploymentWindow:
+          type: "integer"
+          format: "int32"
+        currentReleaseVersion:
+          type: "string"
+        previousReleaseVersion:
+          type: "string"
+        releaseStatus:
+          type: "string"
+        isDelayInRelease:
+          type: "string"
+        reasonForDelay:
+          type: "string"
+        auditInfo:
+          $ref: "#/components/schemas/AuditInfo"
+        reasonOfDeployment:
+          type: "string"
+          enum:
+          - "NEW_SERVICE_DEPLOYMENT"
+          - "MAINTENANCE"
+          - "INFRASTRUCTURE_UPGRADE"
+          - "FEATURE_UPGRADE"
+          - "HOTFIX"
+        deploymentCompleteTime:
+          type: "string"
+          format: "date-time"
+    DeploymentDetailsResponse:
+      type: "object"
+      properties:
+        releaseId:
+          type: "string"
+          example: "REL-{version}-{date}"
+        statusMessage:
+          type: "string"
+    CCMetaData:
+      type: "object"
+      properties:
+        Name:
+          type: "string"
+        Description:
+          type: "string"
+        FeatureScope:
+          type: "string"
+        Version:
+          type: "string"
+        ActiveFlag:
+          type: "boolean"
+        UpdatedBy:
+          type: "string"
+        UpdatedDate:
+          type: "string"
+        ReferenceData:
+          type: "array"
+          items:
+            type: "string"
+    CWPReferenceData:
+      type: "object"
+      properties:
+        logicCodeAndEncodeRefData:
+          type: "object"
+          additionalProperties:
+            $ref: "#/components/schemas/EncodeAndLogicCode"
+    EncodeAndLogicCode:
+      type: "object"
+      properties:
+        encoding:
+          type: "string"
+        logicCodes:
+          type: "object"
+          additionalProperties:
+            type: "string"
+        comxLogicCode:
+          type: "string"
+        customModelLogicCode:
+          type: "string"
+        eventLogicCode:
+          type: "string"
+        comxSupported:
+          type: "boolean"
+        customModelSupported:
+          type: "boolean"
+        registers:
+          type: "integer"
+          format: "int32"
+        bitmask:
+          type: "string"
+    JsonNode:
+      type: "object"
+    GetDeploymentDetailsResponse:
+      required:
+      - "currentReleaseVersion"
+      - "plannedReleaseDateTime"
+      - "releaseStatus"
+      - "serviceName"
+      type: "object"
+      properties:
+        releaseId:
+          type: "string"
+          example: "REL-{version}-{date}"
+        serviceName:
+          type: "string"
+          example: "topology-service"
+          enum:
+          - "CONVERSION_SERVICE"
+          - "TOPOLOGY_SERVICE"
+          - "PROJECT_MANAGEMENT_SERVICE"
+        plannedReleaseDateTime:
+          type: "string"
+          format: "date-time"
+          example: "2022-08-03T11:25:30Z"
+        deploymentWindow:
+          type: "integer"
+          format: "int32"
+          example: 3
+        currentReleaseVersion:
+          type: "string"
+        previousReleaseVersion:
+          type: "string"
+        releaseStatus:
+          type: "string"
+          example: "Planned, Completed"
+        isDelayInRelease:
+          type: "string"
+        reasonForDelay:
+          type: "string"
+        auditInfo:
+          $ref: "#/components/schemas/AuditInfo"
+        reasonOfDeployment:
+          type: "string"
+          enum:
+          - "NEW_SERVICE_DEPLOYMENT"
+          - "MAINTENANCE"
+          - "INFRASTRUCTURE_UPGRADE"
+          - "FEATURE_UPGRADE"
+          - "HOTFIX"
+        deploymentCompleteTime:
+          type: "string"
+          format: "date-time"
+  securitySchemes:
+    X-Api-Key:
+      type: "apiKey"
+      description: "Azure_Subscription_Key"
+      name: "X-Api-Key"
+      in: "header"
+    Authorization:
+      type: "apiKey"
+      description: "IDMS_Key"
+      name: "Authorization"
+      in: "header"

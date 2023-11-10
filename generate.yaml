@@ -1,0 +1,15 @@
+---
+name: clouddictionariesapi
+description: <p><b>Hi Team - This is the Cloud Web Portal service API documentation</b></p>
+basePath: /clouddictionariesapi
+openApiSpec: clouddictionariesapi.yaml
+environmentSpec: INT
+authMethod: none
+azureRateLimit:
+  noOfCalls: 45
+  renewalPeriod: 34
+  counter: ip-address
+responseCache:
+  timeDuration: 56
+schemes: []
+routes: []

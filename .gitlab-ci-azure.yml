@@ -1,0 +1,91 @@
+stages:
+  - deploy
+  
+variables:
+    AZURE_SUBSCRIPTION_ID: "53feb616-2b59-407d-be97-b2797bc3d0f5"
+    AZURE_GROUP_NAME: "etpxapim-rg"
+    AZURE_API_SERVICE_NAME: "thbs-apim-2"
+
+
+azure-api-deploy:
+  stage: deploy
+  tags:
+    - tekton-thbs-coe
+  script:
+    #- sudo su
+    - whoami
+    - echo "PATH "$PATH
+    - echo "We are before echo"
+    - echo ${AZURE_GROUP_NAME} ${AZURE_API_SERVICE_NAME} ${CI_PROJECT_NAME}
+    - echo "We are after echo"
+    - whoami
+    - export AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}
+    - export AZURE_GROUP_NAME=${AZURE_GROUP_NAME}
+    - export AZURE_API_SERVICE_NAME=${AZURE_API_SERVICE_NAME}
+    - pwd
+#    - AZURE_API_ID=$(az apim api import -g ${AZURE_GROUP_NAME} --service-name ${AZURE_API_SERVICE_NAME} --path ${CI_PROJECT_NAME} --specification-path ./${CI_PROJECT_NAME}.yaml --specification-format OpenApi --subscription-required false | jq -r '.name')
+#    - echo "Deployed API"
+#    - echo ${AZURE_API_ID}
+#    - export AZURE_API_ID=${AZURE_API_ID}
+    #This is SpikeArest for APIGEE so commenting -Santosh
+    #- export RATE_LIMIT_VALUE=$(yq eval '.spikeArrest.rate' generate.yaml)
+    #- export RATE_LIMIT_COUNTER_KEY=$(yq eval '.spikeArrest.counter' generate.yaml)
+
+    - export IP_ADDRESS_TO_ALLOW=$(yq eval '.filterIp.allowip' generate.yaml)
+    - export IP_ADDRESS_TO_FORBID=$(yq eval '.filterIp.blockip' generate.yaml)
+    - export CORS_ALLOWED_ORIGINS=$(yq eval '.allowedOrigins.origins' generate.yaml)
+    - export CORS_ALLOW_CREDENTIALS=$(yq eval '.allowedOrigins.creds' generate.yaml)
+    - export CORS_ALLOWED_METHODS=$(yq eval '.allowedOrigins.methods' generate.yaml)
+    - export CORS_CACHE_PERIOD_MAX_SECONDS=$(yq eval '.allowedOrigins.maxSeconds' generate.yaml)
+    - export CORS_ALLOWED_HEADERS=$(yq eval '.allowedOrigins.allowHeaders' generate.yaml)
+    - export CORS_EXPOSE_HEADERS=$(yq eval '.allowedOrigins.exposeHeaders' generate.yaml)
+    - export BACKEND_OAUTH_PROVIDER_URL=$(yq eval '.backendOauth.providerurl' generate.yaml)
+    - export BACKEND_OAUTH_CLIENT_ID=$(yq eval '.backendOauth.clientid' generate.yaml)
+    - export BACKEND_OAUTH_CLIENT_SECRET=$(yq eval '.backendOauth.clientsecret' generate.yaml)
+
+    #Added by Santosh
+    - export RATE_LIMIT_VALUE=$(yq eval '.azureRateLimit.noOfCalls' generate.yaml)
+    - export RATE_RENEWAL_PERIOD=$(yq eval '.azureRateLimit.renewalPeriod' generate.yaml)
+    - export RATE_LIMIT_COUNTER_KEY=$(yq eval '.azureRateLimit.counter' generate.yaml)
+
+    
+    
+    #- export RL_NO_OF_CALLS=$(yq eval '.azureRateLimitConfig.noOfCalls' generate.yaml) #Rate Limit Number of calls
+    #- export RL_RENEWAL_PERIOD=$(yq eval '.azureRateLimitConfig.renewalPeriod' generate.yaml) #Rate Limit renewal period
+    #- export RL_COUNTER_KEY=$(yq eval '.azureRateLimitConfig.counter' generate.yaml) #Rate Limit counter key
+    - export CACHE_DURATION=$(yq eval '.responseCache.timeDuration' generate.yaml)
+    - export ACCEPT_HEADERS=$(yq eval '.cacheTime.acceptHeaders' generate.yaml)
+    
+    - export HEADER_NAME=$(yq eval '.validateJWT.headerName' generate.yaml)
+    - export FAILEDSTATUSCODE=$(yq eval '.validateJWT.failedStatusCode' generate.yaml)
+    - export OPENIDURL=$(yq eval '.validateJWT.openIdURL' generate.yaml)
+    
+    - export CLAIMS=$(yq eval '.validateJWT.requiredClaims.name' generate.yaml)
+    - export CLAIMS_MATCH=$(yq eval '.validateJWT.requiredClaims.match' generate.yaml)
+    
+    - export CORRELATIONID=$(yq eval '.corelation.correlationId' generate.yaml)
+    - export TRACE=$(yq eval '.corelation.trace' generate.yaml)
+    - export FAILEDSTATUSMESSAGE=$(yq -r '.validateJWT.failedStatusMessage' generate.yaml)
+    
+    - export PRODUCTNAME=$(yq -r '.product.productName' generate.yaml)
+    - export APILIST=$(yq -r '.product.apiList' generate.yaml)
+    #- echo $FAILEDSTATUSMESSAGE
+  
+    - az login --service-principal --username e9fa51dc-d852-4247-8f77-e5b923743cff --password bRq8Q~VZ9gs.J5ufsTMbqr8b4wx5wJeUQ.9Slc68 --tenant 9d68da93-1f22-4f6c-9e91-aa61811bc7b0
+    
+    #- sudo chmod 777 /home/gitlab-runner/santosh/azure/scripts/*
+    - cp /home/gitlab-runner/santosh/azure/scripts/*.sh .
+    - sh deploy.sh
+    
+#    - SPIKE_ARREST_VALUE=$(yq eval '.spikeArrest.ref' generate.yaml)
+#    - if [[ "$SPIKE_ARREST_VALUE" == *ph ]]; then AZURE_API_TRAFFIC_ARREST_LIMIT_COUNT=${SPIKE_ARREST_VALUE%ph}; AZURE_API_TRAFFIC_ARREST_LIMIT_INTERVAL=3600; elif [[ "$SPIKE_ARREST_VALUE" == *pm ]]; then AZURE_API_TRAFFIC_ARREST_LIMIT_COUNT=${SPIKE_ARREST_VALUE%pm}; AZURE_API_TRAFFIC_ARREST_LIMIT_INTERVAL=60; elif [[ "$SPIKE_ARREST_VALUE" == *ps ]]; then AZURE_API_TRAFFIC_ARREST_LIMIT_COUNT=${SPIKE_ARREST_VALUE%ps}; AZURE_API_TRAFFIC_ARREST_LIMIT_INTERVAL=5; fi;
+#    - echo ${AZURE_API_TRAFFIC_ARREST_LIMIT_COUNT}
+#    - echo ${AZURE_API_TRAFFIC_ARREST_LIMIT_INTERVAL}
+#    - cp /home/ec2-user/softwares/az-cli/update-policy.sh .
+#    - sed -i "s/AZURE_API_TRAFFIC_ARREST_LIMIT_COUNT/${AZURE_API_TRAFFIC_ARREST_LIMIT_COUNT}/g" update-policy.sh
+#    - sed -i "s/AZURE_API_TRAFFIC_ARREST_LIMIT_INTERVAL/$AZURE_API_TRAFFIC_ARREST_LIMIT_INTERVAL/g" update-policy.sh
+#    - sh -x update-policy.sh
+#    - az rest --method PUT --uri https://management.azure.com/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${AZURE_GROUP_NAME}/providers/Microsoft.ApiManagement/service/${AZURE_API_SERVICE_NAME}/apis/${AZURE_API_ID}/policies/policy?api-version=2021-08-01 --body '{"properties":{"method":"PUT","value":"<policies><inbound><rate-limit-by-key  calls=\"${AZURE_API_TRAFFIC_ARREST_LIMIT_COUNT}\" renewal-period=\"${AZURE_API_TRAFFIC_ARREST_LIMIT_INTERVAL}\" counter-key=\"@(context.Request.IpAddress)\" /></inbound></policies>","format":"rawxml"},}'
+#    - echo "Updated policy"
+
+
