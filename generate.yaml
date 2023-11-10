@@ -6,7 +6,7 @@ openApiSpec: clouddictionariesapi.yaml
 environmentSpec: Dev
 authMethod: none
 responseCache:
-  timeDuration: 56
+  timeDuration: 52
 corelation:
   correlationId: "true"
 schemes: []
