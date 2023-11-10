@@ -1,15 +1,12 @@
 ---
-name: clouddictionariesapi
-description: <p><b>Hi Team - This is the Cloud Web Portal service API documentation</b></p>
-basePath: /clouddictionariesapi
-openApiSpec: clouddictionariesapi.yaml
-environmentSpec: QA
+environmentSpec: INT
 authMethod: none
-azureRateLimit:
-  noOfCalls: 34
-  renewalPeriod: 56
-  counter: ip-address
 responseCache:
-  timeDuration: 46
+  timeDuration: 56
+product:
+  productName: Prod134
+  apiList: "asset-management,clouddictionariesapi,data-api-s,eesspa"
+corelation:
+  correlationId: "true"
 schemes: []
 routes: []
