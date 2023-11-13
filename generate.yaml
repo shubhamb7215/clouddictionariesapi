@@ -1,13 +1,10 @@
 ---
-name: clouddictionariesapi
-description: <p><b>Hi Team - This is the Cloud Web Portal service API documentation</b></p>
-basePath: /clouddictionariesapi
-openApiSpec: clouddictionariesapi.yaml
-environmentSpec: Dev
+environmentSpec: QA
 authMethod: none
 responseCache:
-  timeDuration: 52
-corelation:
-  correlationId: "true"
+  timeDuration: 45
+product:
+  productName: Prod157
+  apiList: "data-api-s,data-processing-coreservice"
 schemes: []
 routes: []
